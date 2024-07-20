@@ -34,4 +34,15 @@ void main(){
   final firstFeature = find.byType(FeatureItem);
   expect(firstFeature, findsWidgets);
 });
+
+testWidgets('Should display the first feature when the Dashboard is opened',
+    (tester) async {
+  await tester.pumpWidget(MaterialApp(home: Dashboard()));
+  final firstFeature = find.widgetWithIcon(FeatureItem, Icons.monetization_on);
+  expect(firstFeature, findsWidgets);
+
+  final nameTransferFeatureItem = find.widgetWithText(FeatureItem, 'Transfer');
+  expect(nameTransferFeatureItem, findsOneWidget);
+});
+
 }
