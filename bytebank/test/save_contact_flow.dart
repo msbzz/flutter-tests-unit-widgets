@@ -1,4 +1,5 @@
 import 'package:bytebank/main.dart';
+import 'package:bytebank/screens/contact_form.dart';
 import 'package:bytebank/screens/contacts_list.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,17 @@ void main() {
 
     await tester.tap(transferFeatureItem);
 
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     final contactsList = find.byType(ContactsList);
     expect(contactsList, findsOneWidget);
 
+    final fabNewContact = find.widgetWithIcon(FloatingActionButton, Icons.add);
+    expect(fabNewContact, findsOneWidget);
+    await tester.tap(fabNewContact);
+    await tester.pumpAndSettle();
+
+    final contactForm = find.byElementType(ContactForm);
+    expect(contactForm,findsOneWidget);
   });
 }
