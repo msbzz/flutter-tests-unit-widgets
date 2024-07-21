@@ -9,6 +9,7 @@ import 'matchers.dart';
 
 void main() {
   testWidgets('Should be save contact', (tester) async {
+    final mockContactDao = MockContactDao();
     await tester.pumpWidget(BytebankApp());
 
     final dashboard = find.byType(Dashboard);

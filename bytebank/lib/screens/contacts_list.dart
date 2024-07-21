@@ -6,12 +6,22 @@ import 'package:bytebank/screens/transaction_form.dart';
 import 'package:flutter/material.dart';
 
 class ContactsList extends StatefulWidget {
+  final ContactDao contactDao;
+  ContactsList({required this.contactDao});
+
   @override
   _ContactsListState createState() => _ContactsListState();
 }
 
 class _ContactsListState extends State<ContactsList> {
-  final ContactDao _dao = ContactDao();
+  //final ContactDao _dao = ContactDao();
+ late ContactDao _dao;
+  
+  @override
+  void initState() {
+    super.initState();
+    _dao = widget.contactDao; // Atribuindo contactDao no initState
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,18 @@
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 import 'matchers.dart';
+import 'mocks.dart';
 
 void main(){
+  
+  final mockContactDao = MockContactDao();
+    // Configurar o mock para retornar uma lista vazia ou qualquer dado necessário
+    when(mockContactDao.findAll()).thenAnswer((_) async => []);
+    
+  
   testWidgets('Should display the main image when the Dashboard is opened',
       (WidgetTester tester) async {
 
@@ -24,7 +32,7 @@ void main(){
     // antes de fazer a busca. Isso é Resolvido com a 
     // declaração de um 'await'.    
     
-    await tester.pumpWidget(MaterialApp(home: Dashboard()));
+    await tester.pumpWidget(MaterialApp(home: Dashboard(contactDao:mockContactDao)));
 
     final mainImage = find.byType(Image);
     expect(mainImage, findsOneWidget);
@@ -32,7 +40,7 @@ void main(){
 
   testWidgets('Should display the first feature when the Dashboard is opened',
     (tester) async {
-  await tester.pumpWidget(MaterialApp(home: Dashboard()));
+  await tester.pumpWidget(MaterialApp(home: Dashboard(contactDao:mockContactDao)));
   final firstFeature = find.byType(FeatureItem);
   expect(firstFeature, findsWidgets);
 });
@@ -40,13 +48,13 @@ void main(){
 
 testWidgets('Should display the transfer feature when the Dashboard is opened',
     (tester) async {
-  await tester.pumpWidget(MaterialApp(home: Dashboard()));
+  await tester.pumpWidget(MaterialApp(home: Dashboard(contactDao:mockContactDao)));
   final transferFeatureItem = find.byWidgetPredicate((widget) => featureItemMatcher(widget, 'Transfer', Icons.monetization_on));
   expect(transferFeatureItem, findsOneWidget);
 });
 testWidgets('Should display the transaction feed feature when the Dashboard is opened',
     (tester) async {
-  await tester.pumpWidget(MaterialApp(home: Dashboard()));
+  await tester.pumpWidget(MaterialApp(home: Dashboard(contactDao:mockContactDao)));
   final transactionFeedFeatureItem = find.byWidgetPredicate((widget) => featureItemMatcher(widget, 'Transaction Feed', Icons.description));
   expect(transactionFeedFeatureItem, findsOneWidget); 
 }); 
