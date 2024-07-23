@@ -14,24 +14,27 @@ class ContactsList extends StatefulWidget {
 }
 
 class _ContactsListState extends State<ContactsList> {
-  //final ContactDao _dao = ContactDao();
- late ContactDao _dao;
   
+   
+ late ContactDao contactDao;
+  
+ _ContactsListState();
+
   @override
   void initState() {
     super.initState();
-    _dao = widget.contactDao; // Atribuindo contactDao no initState
+    contactDao = widget.contactDao; // Atribuindo contactDao no initState
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transfer'),
+        title: const  Text('Transfer'),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: [],
-        future: _dao.findAll(),
+        future: contactDao.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -61,7 +64,7 @@ class _ContactsListState extends State<ContactsList> {
               );
               break;
           }
-          return Text('Unknown error');
+          return const Text('Unknown error');
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -69,12 +72,12 @@ class _ContactsListState extends State<ContactsList> {
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => ContactForm(),
+                  builder: (context) => ContactForm(contactDao:contactDao),
                 ),
               )
               .then((value) => setState(() {}));
         },
-        child: Icon(
+        child: const Icon(
           Icons.add,
         ),
       ),
@@ -98,13 +101,13 @@ class _ContactItem extends StatelessWidget {
         onTap: () => onClick(),
         title: Text(
           contact.name,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24.0,
           ),
         ),
         subtitle: Text(
           contact.accountNumber.toString(),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16.0,
           ),
         ),

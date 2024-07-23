@@ -1,10 +1,15 @@
+import 'package:bytebank/database/dao/contact_dao.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'matchers.dart';
-import 'mocks.dart';
+import 'save_contact_flow_test.mocks.dart';
+//import 'mocks.dart';
+
+@GenerateMocks([ContactDao])
 
 void main(){
   
