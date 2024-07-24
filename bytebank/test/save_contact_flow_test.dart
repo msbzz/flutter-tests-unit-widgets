@@ -98,13 +98,13 @@ void main() {
 
     await tester.pumpAndSettle();
      
-  //   // Verificar se o método save foi chamado (solução 1)
-  //   verify(mockContactDao.save(any)).called(1);
-  //   debugPrint("Verify only save method executed");
+    // Verificar se o método save foi chamado (solução 1)
+    verify(mockContactDao.save(any)).called(1);
+    debugPrint("Verify only save method executed");
 
-  //  //Verificar se o método save foi chamado com os parâmetros corretos (solução 2)
-  //   verify(mockContactDao.save(captureThat(isA<Contact>()))).called(1);
-  //   debugPrint("Verify only type is corresponded to class contact in save method executed");
+   //Verificar se o método save foi chamado com os parâmetros corretos (solução 2)
+    verify(mockContactDao.save(captureThat(isA<Contact>()))).called(1);
+    debugPrint("Verify only type is corresponded to class contact in save method executed");
     
     // // Verificar se o método save foi chamado com os parâmetros corretos
     verify(mockContactDao.save(Contact(0, 'Alex', 1000))).called(1);
