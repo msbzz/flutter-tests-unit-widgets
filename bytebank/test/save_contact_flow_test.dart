@@ -13,7 +13,7 @@ import 'save_contact_flow_test.mocks.dart';
 
 @GenerateMocks([ContactDao])
 void main() {
-  testWidgets('Should be save contact', (tester) async {
+  testWidgets('Should save contact', (tester) async {
     final mockContactDao = MockContactDao();
 
     // Configurar o mock para retornar uma lista vazia
@@ -23,8 +23,11 @@ void main() {
     });
 
     // Configurar o mock para salvar um contato
-    when(mockContactDao.save(any)).thenAnswer((_) async {
-      debugPrint("Mock save() called");
+    final capturedContacts = <Contact>[];
+    when(mockContactDao.save(captureAny)).thenAnswer((invocation) async {
+      final contact = invocation.positionalArguments[0] as Contact;
+      capturedContacts.add(contact);
+      debugPrint("Mock save() called with: $contact");
       return 1; // Suponha que o retorno seja o ID do contato salvo
     });
 
@@ -75,7 +78,7 @@ void main() {
     expect(nameTextField, findsOneWidget);
     debugPrint("Text field 'Full name' finder");
     await tester.enterText(nameTextField, 'Alex');
-    debugPrint("Entered name 'Alex' ");
+    debugPrint("Entered name 'Alex'");
 
     final accountNumberTextField = find.byWidgetPredicate((widget) {
       if (widget is TextField) {
@@ -87,28 +90,28 @@ void main() {
     expect(accountNumberTextField, findsOneWidget);
     debugPrint("Text field 'Account number' finder");
     await tester.enterText(accountNumberTextField, '1000');
-    debugPrint("Entered name '1000' ");
-
+    debugPrint("Entered account number '1000'");
 
     final createButton = find.widgetWithText(TextButton, 'Create');
     expect(createButton, findsOneWidget);
     debugPrint("TextButton 'Create' finder");
     await tester.tap(createButton);
-    debugPrint("Tapped on TextButton to create new account number");
+    debugPrint("Tapped on TextButton to create new contact");
 
     await tester.pumpAndSettle();
-     
-    // Verificar se o método save foi chamado (solução 1)
-    verify(mockContactDao.save(any)).called(1);
-    debugPrint("Verify only save method executed");
 
-   //Verificar se o método save foi chamado com os parâmetros corretos (solução 2)
-    verify(mockContactDao.save(captureThat(isA<Contact>()))).called(1);
-    debugPrint("Verify only type is corresponded to class contact in save method executed");
-    
-    // // Verificar se o método save foi chamado com os parâmetros corretos
-    verify(mockContactDao.save(Contact(0, 'Alex', 1000))).called(1);
-    debugPrint("Verify if only the content of the contact class was received by the executed 'save' method");
-
+    // Realizar todas as verificações com base nos contatos capturados
+    debugPrint("Iniciando verificações dos contatos capturados");
+    try {
+      expect(capturedContacts.length, 1, reason: "Deve haver exatamente uma chamada ao método save");
+      final savedContact = capturedContacts.first;
+      expect(savedContact, isA<Contact>(), reason: "O contato salvo deve ser do tipo Contact");
+      expect(savedContact.name, 'Alex', reason: "O nome do contato salvo deve ser 'Alex'");
+      expect(savedContact.accountNumber, 1000, reason: "O número da conta do contato salvo deve ser 1000");
+      debugPrint("Todas as verificações dos contatos capturados passaram");
+    } catch (e) {
+      debugPrint("Falha nas verificações dos contatos capturados: $e");
+      rethrow;
+    }
   });
 }
