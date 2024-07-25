@@ -53,6 +53,8 @@ void main() {
     final contactsList = find.byType(ContactsList);
     expect(contactsList, findsOneWidget);
     debugPrint("ContactsList widget found after navigating to contacts list");
+    verify(mockContactDao.findAll()).called(1);
+    debugPrint("verify findAll called in contacts list");
 
     final fabNewContact = find.widgetWithIcon(FloatingActionButton, Icons.add);
     expect(fabNewContact, findsOneWidget);
@@ -68,24 +70,30 @@ void main() {
     expect(contactForm, findsOneWidget);
     debugPrint("ContactForm widget found for entering new contact details");
 
-    final nameTextField = find.byWidgetPredicate((widget) {
-      if (widget is TextField) {
-        return widget.decoration!.labelText == 'Full name';
-      }
-      return false;
-    });
+    // final nameTextField = find.byWidgetPredicate((widget) {
+    //   if (widget is TextField) {
+    //     return widget.decoration!.labelText == 'Full name';
+    //   }
+    //   return false;
+    // });
+
+    final nameTextField = find.byWidgetPredicate((widget) => _textFieldMatcher(widget,'Full name' )
+    );
 
     expect(nameTextField, findsOneWidget);
     debugPrint("Text field 'Full name' finder");
     await tester.enterText(nameTextField, 'Alex');
     debugPrint("Entered name 'Alex'");
 
-    final accountNumberTextField = find.byWidgetPredicate((widget) {
-      if (widget is TextField) {
-        return widget.decoration!.labelText == 'Account number';
-      }
-      return false;
-    });
+    // final accountNumberTextField = find.byWidgetPredicate((widget) {
+    //   if (widget is TextField) {
+    //     return widget.decoration!.labelText == 'Account number';
+    //   }
+    //   return false;
+    // });
+
+    final accountNumberTextField = find.byWidgetPredicate((widget) => _textFieldMatcher(widget,'Account number' )
+    );
 
     expect(accountNumberTextField, findsOneWidget);
     debugPrint("Text field 'Account number' finder");
@@ -100,18 +108,35 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Realizar todas as verificações com base nos contatos capturados
-    debugPrint("Iniciando verificações dos contatos capturados");
-    try {
-      expect(capturedContacts.length, 1, reason: "Deve haver exatamente uma chamada ao método save");
-      final savedContact = capturedContacts.first;
-      expect(savedContact, isA<Contact>(), reason: "O contato salvo deve ser do tipo Contact");
-      expect(savedContact.name, 'Alex', reason: "O nome do contato salvo deve ser 'Alex'");
-      expect(savedContact.accountNumber, 1000, reason: "O número da conta do contato salvo deve ser 1000");
-      debugPrint("Todas as verificações dos contatos capturados passaram");
-    } catch (e) {
-      debugPrint("Falha nas verificações dos contatos capturados: $e");
-      rethrow;
-    }
+    // // Realizar todas as verificações com base nos contatos capturados
+    // debugPrint("Iniciando verificações dos contatos capturados");
+    // try {
+    //   expect(capturedContacts.length, 1, reason: "Deve haver exatamente uma chamada ao método save");
+    //   final savedContact = capturedContacts.first;
+    //   expect(savedContact, isA<Contact>(), reason: "O contato salvo deve ser do tipo Contact");
+    //   expect(savedContact.name, 'Alex', reason: "O nome do contato salvo deve ser 'Alex'");
+    //   expect(savedContact.accountNumber, 1000, reason: "O número da conta do contato salvo deve ser 1000");
+    //   debugPrint("Todas as verificações dos contatos capturados passaram");
+    // } catch (e) {
+    //   debugPrint("Falha nas verificações dos contatos capturados: $e");
+    //   rethrow;
+    // }
+
+    verify(mockContactDao.save(Contact(0, 'Alex', 1000)));
+    debugPrint("the 'save' method has been fully verified");
+
+    final contactsListBack = find.byType(ContactsList);
+    expect(contactsListBack, findsOneWidget);
+
+verify(mockContactDao.findAll());
   });
+}
+
+bool _textFieldMatcher(Widget widget,String labelText) {
+     
+    if (widget is TextField) {
+      return widget.decoration!.labelText == labelText;
+    }
+    return false;
+       
 }
