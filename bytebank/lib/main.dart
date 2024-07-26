@@ -1,9 +1,16 @@
 import 'package:bytebank/database/dao/contact_dao.dart';
+import 'package:bytebank/database/database_helper.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-void main() {
+void main() async {
+  // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Reset the database
+  //await DatabaseHelper.resetDatabase();
+
   runApp(BytebankApp(contactDao: ContactDao()));
 }
 
