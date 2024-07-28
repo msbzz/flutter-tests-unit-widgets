@@ -21,8 +21,17 @@ class TransactionForm extends StatefulWidget {
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebClient _webClient = TransactionWebClient();
-  final String transactionId = Uuid().v4();
+  late final String transactionId;
+
   bool _sending = false;
+   
+
+  @override
+  void initState() {
+    super.initState();
+    transactionId = Uuid().v4();  // Inicializando aqui
+    print('transactionId ==> $transactionId');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,15 +89,16 @@ class _TransactionFormState extends State<TransactionForm> {
                       final double value =
                           double.tryParse(_valueController.text)??0;
                       final transactionCreated = Transaction(
-                        transactionId,
-                        value,
-                        widget.contact,
+                        id:transactionId,
+                        value:value,
+                        contact:widget.contact,
                       );
                       showDialog(
                           context: context,
                           builder: (contextDialog) {
                             return TransactionAuthDialog(
                               onConfirm: (String password) {
+                                print('after ==>>> save(transactionCreated, password, context)');
                                 _save(transactionCreated, password, context);
                               },
                             );
@@ -141,6 +151,7 @@ class _TransactionFormState extends State<TransactionForm> {
       _showFailureMessage(context,
           message: 'timeout submitting the transaction');
     }, test: (e) => e is TimeoutException).catchError((e) {
+      print('error ======>>> ${e.toString()}');
       _showFailureMessage(context);
     }).whenComplete(() {
       setState(() {

@@ -63,7 +63,7 @@ class _ContactFormState extends State<ContactForm> {
                     final String name = _nameController.text;
                     final int accountNumber =
                         int.tryParse(_accountNumberController.text) ?? 0;
-                    final Contact newContact = Contact(0, name, accountNumber);
+                    final Contact newContact = Contact(id:0,name: name, accountNumber: accountNumber);
                     contactDao.save(newContact).then((id) => Navigator.pop(context));
                   },
                 ),

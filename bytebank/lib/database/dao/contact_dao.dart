@@ -16,6 +16,7 @@ class ContactDao {
   Future<int> save(Contact contact) async {
     final Database db = await getDatabase();
     Map<String, dynamic> contactMap = _toMap(contact);
+    contactMap.remove(_id);
     return db.insert(_tableName, contactMap);
   }
 
@@ -26,21 +27,31 @@ class ContactDao {
     return contacts;
   }
 
+  // Map<String, dynamic> _toMap(Contact contact) {
+  //   final Map<String, dynamic> contactMap = Map();
+  //   contactMap[_name] = contact.name;
+  //   contactMap[_accountNumber] = contact.accountNumber;
+  //   return contactMap;
+  // }
+
   Map<String, dynamic> _toMap(Contact contact) {
-    final Map<String, dynamic> contactMap = Map();
-    contactMap[_name] = contact.name;
-    contactMap[_accountNumber] = contact.accountNumber;
+    final Map<String, dynamic> contactMap = {
+      _id: contact.id,
+      _name: contact.name,
+      _accountNumber: contact.accountNumber,
+    };
     return contactMap;
   }
-
+  
   List<Contact> _toList(List<Map<String, dynamic>> result) {
     final List<Contact> contacts = [];
     for (Map<String, dynamic> row in result) {
       final Contact contact = Contact(
-        row[_id],
-        row[_name],
-        row[_accountNumber],
+      id: row[_id] ,
+      name: row[_name],
+      accountNumber: row[_accountNumber],
       );
+
       contacts.add(contact);
     }
     return contacts;
