@@ -18,14 +18,6 @@ class Transaction {
     }
   }
 
-  // Transaction.fromJson(Map<String, dynamic> json)
-  //     : id = json['id'],
-  //       value = json['value'].toDouble(),  // Certifique-se de que é convertido para double
-  //       contact = Contact.fromJson(json['contact']) {
-  //   if (value <= 0) {
-  //     throw ArgumentError('O valor deve ser maior que zero');
-  //   }
-  // }
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
