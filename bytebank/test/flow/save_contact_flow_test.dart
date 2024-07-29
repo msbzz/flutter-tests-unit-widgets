@@ -122,7 +122,7 @@ void main() {
     //   rethrow;
     // }
 
-    verify(mockContactDao.save(Contact(0, 'Alex', 1000)));
+    verify(mockContactDao.save(Contact(id:0,name: 'Alex',accountNumber: 1000)));
     debugPrint("the 'save' method has been fully verified");
 
     final contactsListBack = find.byType(ContactsList);

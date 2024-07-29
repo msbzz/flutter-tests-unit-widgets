@@ -25,7 +25,7 @@ void main(){
 
       when(mockContactDao.findAll()).thenAnswer((invocation) async {
       debugPrint("Mock findAll() called, returning ${invocation.memberName}");
-      return [Contact(0,'pgt mth',0)];
+      return [Contact(id:0,name:'pgt mth',accountNumber:0)];
     });
 
     // Configurar o mock para salvar um contato
