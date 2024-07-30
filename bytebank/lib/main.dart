@@ -1,6 +1,7 @@
 import 'package:bytebank/database/dao/contact_dao.dart';
 import 'package:bytebank/database/database_helper.dart';
 import 'package:bytebank/screens/dashboard.dart';
+import 'package:bytebank/widgets/app_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,16 +22,20 @@ class BytebankApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.green[900],
-        hintColor: Colors.blueAccent[700],
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.blueAccent[700],
-          textTheme: ButtonTextTheme.primary,
+
+    return AppDependencies(
+      contactDao:contactDao,
+      child: MaterialApp(
+        theme: ThemeData(
+          primaryColor: Colors.green[900],
+          hintColor: Colors.blueAccent[700],
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.blueAccent[700],
+            textTheme: ButtonTextTheme.primary,
+          ),
         ),
+        home: Dashboard(),
       ),
-      home: Dashboard(contactDao: contactDao),
     );
   }
 }
