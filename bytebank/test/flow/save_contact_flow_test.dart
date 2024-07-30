@@ -1,4 +1,5 @@
 import 'package:bytebank/database/dao/contact_dao.dart';
+import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/main.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/contact_form.dart';
@@ -9,12 +10,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../matchers/matchers.dart';
+ 
 import '../mocks/save_contact_flow_test.mocks.dart';
 
-@GenerateMocks([ContactDao])
+@GenerateMocks([ContactDao,TransactionWebClient])
 void main() {
   testWidgets('Should save contact', (tester) async {
     final mockContactDao = MockContactDao();
+    final mockTransactionWebClient = MockTransactionWebClient(); 
 
     // Configurar o mock para retornar uma lista vazia
     when(mockContactDao.findAll()).thenAnswer((_) async {
@@ -29,9 +32,10 @@ void main() {
       capturedContacts.add(contact);
       debugPrint("Mock save() called with: $contact");
       return 1; // Suponha que o retorno seja o ID do contato salvo
-    });
+    }); 
 
     await tester.pumpWidget(BytebankApp(
+      transactionWebClient: mockTransactionWebClient,
       contactDao: mockContactDao,
     ));
     debugPrint("BytebankApp widget loaded successfully");

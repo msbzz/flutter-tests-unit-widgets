@@ -1,4 +1,5 @@
 import 'package:bytebank/database/dao/contact_dao.dart';
+import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/main.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/contacts_list.dart';
@@ -10,13 +11,14 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../matchers/matchers.dart';
+ 
 import '../mocks/save_contact_flow_test.mocks.dart';
 
-@GenerateMocks([ContactDao])
+@GenerateMocks([ContactDao,TransactionWebClient])
 void main(){
   testWidgets('transfer to a contact', (tester) async {
     final mockContactDao = MockContactDao();
-
+    final mockTransactionWebClient = MockTransactionWebClient(); 
     // Configurar o mock para retornar uma lista vazia
     when(mockContactDao.findAll()).thenAnswer((_) async {
       debugPrint("Mock findAll() called, returning an empty list");
@@ -39,6 +41,7 @@ void main(){
     // });
 
     await tester.pumpWidget(BytebankApp(
+      transactionWebClient:mockTransactionWebClient,
       contactDao: mockContactDao,
     ));
     debugPrint("BytebankApp widget loaded successfully");

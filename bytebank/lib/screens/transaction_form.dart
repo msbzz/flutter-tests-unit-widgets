@@ -6,6 +6,7 @@ import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/models/transaction.dart';
+import 'package:bytebank/widgets/app_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,7 +21,7 @@ class TransactionForm extends StatefulWidget {
 
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
-  final TransactionWebClient _webClient = TransactionWebClient();
+ // final TransactionWebClient _webClient = TransactionWebClient();
   late final String transactionId;
 
   bool _sending = false;
@@ -35,6 +36,7 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
+    final dependencies =AppDependencies.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('New transaction'),
@@ -47,7 +49,7 @@ class _TransactionFormState extends State<TransactionForm> {
             children: <Widget>[
               Visibility(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Progress(
                     message: 'Sending...',
                   ),
@@ -56,7 +58,7 @@ class _TransactionFormState extends State<TransactionForm> {
               ),
               Text(
                 widget.contact.name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24.0,
                 ),
               ),
@@ -64,7 +66,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
                   widget.contact.accountNumber.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 32.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -74,9 +76,9 @@ class _TransactionFormState extends State<TransactionForm> {
                 padding: const EdgeInsets.only(top: 16.0),
                 child: TextField(
                   controller: _valueController,
-                  style: TextStyle(fontSize: 24.0),
-                  decoration: InputDecoration(labelText: 'Value'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  style: const TextStyle(fontSize: 24.0),
+                  decoration: const InputDecoration(labelText: 'Value'),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
               ),
               Padding(
@@ -84,7 +86,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 child: SizedBox(
                   width: double.maxFinite,
                   child: TextButton(
-                    child: Text('Transfer'),
+                    child: const Text('Transfer'),
                     onPressed: () {
                       final double value =
                           double.tryParse(_valueController.text)??0;
@@ -99,7 +101,7 @@ class _TransactionFormState extends State<TransactionForm> {
                             return TransactionAuthDialog(
                               onConfirm: (String password) {
                                 print('after ==>>> save(transactionCreated, password, context)');
-                                _save(transactionCreated, password, context);
+                                _save(dependencies.transactionWebClient,transactionCreated, password, context);
                               },
                             );
                           });
@@ -115,11 +117,13 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   void _save(
+    TransactionWebClient webClient,
     Transaction transactionCreated,
     String password,
     BuildContext context,
   ) async {
     Transaction transaction = await _send(
+      webClient,
       transactionCreated,
       password,
       context,
@@ -139,13 +143,13 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  Future<Transaction> _send(Transaction transactionCreated, String password,
+  Future<Transaction> _send(TransactionWebClient webClient,Transaction transactionCreated, String password,
       BuildContext context) async {
     setState(() {
       _sending = true;
     });
     final Transaction transaction =
-        await _webClient.save(transactionCreated, password).catchError((e) {
+        await webClient.save(transactionCreated, password).catchError((e) {
       _showFailureMessage(context, message: e.message);
     }, test: (e) => e is HttpException).catchError((e) {
       _showFailureMessage(context,
