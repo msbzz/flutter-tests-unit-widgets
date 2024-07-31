@@ -1,3 +1,4 @@
+import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/database/dao/contact_dao.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/main.dart';
@@ -27,7 +28,7 @@ void main(){
 
       when(mockContactDao.findAll()).thenAnswer((invocation) async {
       debugPrint("Mock findAll() called, returning ${invocation.memberName}");
-      return [Contact(id:0,name:'pgt mth',accountNumber:0)];
+      return [Contact(id:0,name:'Marco',accountNumber:1000)];
     });
 
     // Configurar o mock para salvar um contato
@@ -71,7 +72,7 @@ void main(){
 
     final contactItem = find.byWidgetPredicate((widget){
        if(widget is ContactItem){
-         return widget.contact.name == 'pgt mth' && widget.contact.accountNumber  == 0;
+        return widget.contact.name == 'Marco' && widget.contact.accountNumber  == 1000;
        }
        return false;
     });
@@ -83,9 +84,38 @@ void main(){
     await tester.pumpAndSettle();
     debugPrint("typed contactItem");
 
-    final transactionForm = find.byType(TransactionForm); 
+    final transactionForm = find.byType(TransactionForm);
     expect(transactionForm,findsOneWidget);
-    debugPrint("finded Transaction Form");
+    debugPrint("finded TransactionForm");
+   final contactName = find.text('Marco');
+    expect(contactName, findsOneWidget);
+    debugPrint("finded name Marco");
+    final contactAccountNumber = find.text('1000');
+    expect(contactAccountNumber, findsOneWidget);
+    debugPrint("finded accountNumber 1000");
+
+    
+    final textFieldValue = find.byWidgetPredicate((widget){
+      return textFieldByLabelTextMatcher(widget,  'Value');
+    });
+
+    expect(textFieldValue, findsOneWidget);
+    debugPrint("finded label text Value");
+
+    await tester.enterText(textFieldValue, '200');
+    debugPrint("edited textValue 200");
+
+    final transferButton = find.widgetWithText(TextButton, 'Transfer');
+    expect(transferButton, findsOneWidget);
+    debugPrint("finded Textbutton Transfer");
+
+    await tester.tap(transferButton);
+    await tester.pumpAndSettle();
+    debugPrint("taped Textbutton Transfer");
+
+    final transactionAuthDialog = find.byType(TransactionAuthDialog);
+    expect(transactionAuthDialog, findsOneWidget);
+    debugPrint("finded TransactionAuthDialog");
 
     
 
