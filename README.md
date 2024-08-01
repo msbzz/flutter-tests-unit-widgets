@@ -1,10 +1,16 @@
- 
-```markdown
+  
 # Bytebank App
+
+## Introdução
+
+
+Este projeto é fruto do curso de 'Testes de unidade e Widget com Mocks:boas práticas no Flutter' da plataforma ALURA
 
 ## Descrição do Projeto
 
 O Bytebank App é um aplicativo para gerenciamento de transações financeiras, permitindo aos usuários cadastrar contatos e realizar transações entre eles. O aplicativo foi desenvolvido para fins de teste, utilizando tanto dados mock quanto acessos de API para diferentes funcionalidades.
+
+<img src="info/projeto.png" alt="Imagem 3" width="70%">
 
 ## Estrutura do Projeto
 
@@ -12,7 +18,7 @@ O Bytebank App é um aplicativo para gerenciamento de transações financeiras, 
 
 - **Transações**: As transações financeiras são gerenciadas através de um servidor Node.js. Esta abordagem foi escolhida para simular um ambiente real de API, onde as transações são enviadas e recebidas através de chamadas HTTP. Isso permite testar a integração com serviços externos e a manipulação de dados em um cenário mais próximo ao de produção. Vale notar que as transações não são persistidas em um banco de dados no servidor; em vez disso, são mantidas em um array temporário. Portanto, quando o servidor é reiniciado, todas as transações são perdidas.
 
-## Justificativa para o Uso do Servidor Node.js
+## Uso do Servidor Node.js
 
 ### Testes com Mock e API
 
@@ -63,8 +69,5 @@ O principal objetivo do Bytebank App é fornecer um ambiente de teste robusto pa
    ```bash
    flutter run
    ```
-
-Com essa configuração, você poderá testar tanto o cadastro de contatos utilizando dados mock locais quanto a funcionalidade de transações através do servidor Node.js.
-```
-
-Essa seção adicional explica claramente o comportamento temporário das transações e justifica o uso do servidor Node.js. Se precisar de mais alguma coisa, estou à disposição para ajudar!
+ 
+ 
