@@ -1,8 +1,10 @@
+import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/database/dao/contact_dao.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/main.dart';
 import 'package:bytebank/models/contact.dart';
+import 'package:bytebank/models/transaction.dart';
 import 'package:bytebank/screens/contacts_list.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:bytebank/screens/transaction_form.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:uuid/uuid.dart';
 
 import '../matchers/matchers.dart';
  
@@ -26,20 +29,15 @@ void main(){
       return [];
     });
 
+      final marcoContatc =Contact(id:1,name:'Marco',accountNumber:1000);
+
       when(mockContactDao.findAll()).thenAnswer((invocation) async {
       debugPrint("Mock findAll() called, returning ${invocation.memberName}");
-      return [Contact(id:0,name:'Marco',accountNumber:1000)];
+      return [marcoContatc];
     });
 
     // Configurar o mock para salvar um contato
     final capturedContacts = <Contact>[];
-
-    // when(mockContactDao.save(captureAny)).thenAnswer((invocation) async {
-    //   final contact = invocation.positionalArguments[0] as Contact;
-    //   capturedContacts.add(contact);
-    //   debugPrint("Mock save() called with: $contact");
-    //   return 1; //  
-    // });
 
     await tester.pumpWidget(BytebankApp(
       transactionWebClient:mockTransactionWebClient,
@@ -117,7 +115,48 @@ void main(){
     expect(transactionAuthDialog, findsOneWidget);
     debugPrint("finded TransactionAuthDialog");
 
-    
+    final textFieldPassword=find.byKey(transactionAuthDialogTextFieldPasswordKey);
+    expect(textFieldPassword, findsOneWidget);
+    debugPrint("finded textFieldPassword");
+
+    await tester.enterText(textFieldPassword,'1000');
+    debugPrint("entered value in textFieldPassword");
+
+    final cancelButtoon = find.widgetWithText(TextButton, 'Cancel');
+    expect(cancelButtoon, findsOneWidget);
+    debugPrint("finded cancelButtoon");
+
+    final confirmButtoon = find.widgetWithText(TextButton, 'Confirm');
+    expect(confirmButtoon, findsOneWidget);
+    debugPrint("finded confirmButtoon");
+ 
+   
+    when(mockTransactionWebClient.save(
+      any,
+      any,
+    )).thenAnswer((_) async {
+      return Transaction(id:Uuid().v4(),value: 200.0, contact: marcoContatc);
+    });
+
+    await tester.tap(confirmButtoon);
+    await tester.pumpAndSettle();
+    debugPrint("taped confirmButtoon");
+
+    final successDialog = find.byType(SuccessDialog);
+    expect(successDialog,findsOneWidget);
+    debugPrint("finded successDialog");
+
+    final okButton = find.widgetWithText(TextButton,'Ok');
+    expect(okButton,findsOneWidget);
+    debugPrint("finded okButton");
+
+    await tester.tap(okButton);
+    await tester.pumpAndSettle();
+     debugPrint("taped okButton");
+
+    final contactListBack = find.byType(ContactsList);
+    expect(contactListBack,findsOneWidget);
+    debugPrint("finded contactListBack");
 
   });
 }
